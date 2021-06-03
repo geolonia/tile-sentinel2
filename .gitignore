@@ -84,3 +84,7 @@ assets
 
 # secrets
 .envrc
+
+tiles/
+
+*.mbtiles
