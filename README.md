@@ -45,11 +45,16 @@ $ sentinelhub.aws --tile 54SUE 2021-06-01
 
 https://sentinelhub-py.readthedocs.io/en/latest/aws_cli.html#sentinel-2-tiles
 
+## 複数の衛星画像をマージ
+
+```
+$ gdal_merge.py -n 0 L1C_T54SUE_A022122_20210601T012656/IMG_DATA/T54SUE_20210601T012659_TCI.jp2 L1C_T54SVE_A022122_20210601T012656/IMG_DATA/T54SVE_20210601T012659_TCI.jp2
+```
 
 ## Sentinel2の画像をzxy形式で分割
 
 ```
-$ gdal2tiles.py --xyz -v -x L1C_T54SUE_A022122_20210601T012656/IMG_DATA/T54SUE_20210601T012659_TCI.jp2 tiles/
+$ gdal2tiles.py --xyz -v -x out.tif tiles/
 ```
 
 ## mbtilesに書き出し
