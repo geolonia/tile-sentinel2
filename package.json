@@ -1,0 +1,22 @@
+{
+  "name": "geolonia-basic",
+  "version": "0.1.0",
+  "description": "3D style based on default style for [Geolonia](https://geolonia.com/).",
+  "main": "style.json",
+  "scripts": {
+    "start": "/usr/local/bin/maputnik --watch --file ./style.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geolonia/basic.git"
+  },
+  "author": {
+    "name": "Geolonia Inc.",
+    "url": "https://geolonia.com/"
+  },
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/geolonia/basic/issues"
+  },
+  "homepage": "https://github.com/geolonia/basic#readme"
+}
