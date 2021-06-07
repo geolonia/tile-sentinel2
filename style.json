@@ -13,9 +13,11 @@
       "minzoom": 6,
       "url": "https://api.geolonia.com/v1/sources?key=YOUR-API-KEY"
     },
-    "sentinel": {
+    "sentinel2": {
       "type": "raster",
-      "url": "https://geolonia.github.io/tile-sentinel2/tiles/{z}/{x}/{y}.png",
+      "tiles": [
+        "https://geolonia.github.io/tile-sentinel2/tiles/{z}/{x}/{y}.png"
+      ],
       "tileSize": 256
     }
   },
@@ -3484,7 +3486,7 @@
     {
       "id": "sentine-tile",
       "type": "raster",
-      "source": "sentinel"
+      "source": "sentinel2"
     }
   ],
   "id": "geolonia-basic"
