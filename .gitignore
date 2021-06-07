@@ -85,6 +85,10 @@ assets
 # secrets
 .envrc
 
-tiles/
-
 *.mbtiles
+
+L1C_*
+
+*.tif
+
+tiles1.vrt
