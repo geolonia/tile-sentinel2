@@ -62,8 +62,6 @@ products_gdf = api.to_geodataframe(products)
 products_gdf_sorted = products_gdf.sort_values(['cloudcoverpercentage'], ascending=[True])
 products_gdf_sorted.head()
 
-print(products_gdf_sorted.iloc[0]["link"])
-
 # 1番雲が少ない画像をダウンロード
 uuid = products_gdf_sorted.iloc[2]["uuid"]
 product_title = products_gdf_sorted.iloc[2]["title"]
