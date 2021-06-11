@@ -1,40 +1,32 @@
 import os
-
 from sentinelsat import SentinelAPI, read_geojson, geojson_to_wkt 
 import matplotlib.pyplot as plt
-
 from shapely.geometry import MultiPolygon, Polygon
-import rasterio as rio
-from rasterio.plot import show
-import rasterio.mask
 
 # 衛星画像取得する範囲を指定
 AREA =  [
   [
-    -220.291841,
-    35.6593884
+    139.0240751,
+    36.1879383
   ],
   [
-    -220.2932143,
-    35.4817801
+    139.0570341,
+    34.7880413
   ],
   [
-    -220.1380324,
-    35.4817801
+    140.8093534,
+    34.8060848
   ],
   [
-    -220.1421523,
-    35.6493456
+    140.8642851,
+    36.1591156
   ],
   [
-    -220.291841,
-    35.6593884
+    139.0240751,
+    36.1879383
   ]
 ]
 
-# 入力された経度の値が西経なので、360°を足して東経に変換
-for i in range(len(AREA)):
-    AREA[i][0] = AREA[i][0] +360
 from geojson import Polygon
 m=Polygon([AREA]) 
 
@@ -46,25 +38,36 @@ with open(str(object_name) +'.geojson', 'w') as f:
 footprint_geojson = geojson_to_wkt(read_geojson(str(object_name) +'.geojson'))
 
 # Copernicus Open Access Hub のユーザー情報を入力
-user = '' 
-password = '' 
+user = 'naogify' 
+password = '%8GUmDt9Bqt#oF0&8y@' 
 api = SentinelAPI(user, password, 'https://scihub.copernicus.eu/dhus')
 
 # 衛星画像を取得する条件を指定
 products = api.query(footprint_geojson,
-                     date = ('20201201', '20210608'), #取得希望期間の入力
+                     date = ('20200608', '20210608'), #取得希望期間の入力
                      platformname = 'Sentinel-2',
                      processinglevel = 'Level-2A',
-                     cloudcoverpercentage = (0,100)) #被雲率（0％〜100％）
+                     cloudcoverpercentage = (0,10)) #被雲率（0％〜100％）
 
 # 雲が少ない順にソート
 products_gdf = api.to_geodataframe(products)
 products_gdf_sorted = products_gdf.sort_values(['cloudcoverpercentage'], ascending=[True])
-products_gdf_sorted.head()
 
 # 1番雲が少ない画像をダウンロード
-uuid = products_gdf_sorted.iloc[2]["uuid"]
-product_title = products_gdf_sorted.iloc[2]["title"]
+for i in range(len(products)):
+
+  unclassified = products_gdf_sorted.iloc[i]["unclassifiedpercentage"]
+
+  metadata = api.get_product_odata(products_gdf_sorted.iloc[i]["uuid"])
+  print(metadata)
+  
+  データがオンラインかつ、unclassifiedpercentage が1以上
+  if api.is_online(products_gdf_sorted.iloc[i]["uuid"]) and unclassified == 0:
+
+    uuid = products_gdf_sorted.iloc[i]["uuid"]
+    product_title = products_gdf_sorted.iloc[i]["title"]
+    break
+
 api.download(uuid, checksum=True)
 
 # ダウンロードした ZIP ファイルを展開
