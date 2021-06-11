@@ -61,7 +61,7 @@ for i in range(len(products)):
   metadata = api.get_product_odata(products_gdf_sorted.iloc[i]["uuid"])
   print(metadata)
   
-  データがオンラインかつ、unclassifiedpercentage が1以上
+  #データがオンラインかつ、unclassifiedpercentage が1以上
   if api.is_online(products_gdf_sorted.iloc[i]["uuid"]) and unclassified == 0:
 
     uuid = products_gdf_sorted.iloc[i]["uuid"]
