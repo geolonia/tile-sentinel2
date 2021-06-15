@@ -2,6 +2,8 @@ import os
 from sentinelsat import SentinelAPI, read_geojson, geojson_to_wkt 
 import matplotlib.pyplot as plt
 from shapely.geometry import MultiPolygon, Polygon
+import re
+from xml.etree import ElementTree as ET
 
 # 衛星画像取得する範囲を指定
 AREA =  [
@@ -47,27 +49,52 @@ products = api.query(footprint_geojson,
                      date = ('20200608', '20210608'), #取得希望期間の入力
                      platformname = 'Sentinel-2',
                      processinglevel = 'Level-2A',
+                     limit = 2,
                      cloudcoverpercentage = (0,10)) #被雲率（0％〜100％）
 
 # 雲が少ない順にソート
 products_gdf = api.to_geodataframe(products)
 products_gdf_sorted = products_gdf.sort_values(['cloudcoverpercentage'], ascending=[True])
 
+# NODATA_PIXEL_PERCENTAGE を取得する関数を用意
+def get_odata_file_url(uuid, path):
+    odata_path = api.api_url + "odata/v1/Products('{}')".format(uuid)
+    for p in path.split('/'):
+        odata_path += "/Nodes('{}')".format(p)
+    odata_path += '/$value'
+    return odata_path
+
+def fetch_s2_qi_info(uuid, product_name):
+    path = '{}.SAFE/MTD_MSIL2A.xml'.format(product_name)
+    url = get_odata_file_url(uuid, path)
+    response = api.session.get(url)
+    xml = ET.XML(response.content)
+
+    qi_info = {}
+
+    image_quality_indicator = xml.find('.//Image_Content_QI')
+
+    if image_quality_indicator:
+      for elem in image_quality_indicator:
+          qi_info[elem.tag] = float(elem.text)
+    else:
+      qi_info = False
+
+    return qi_info
+
 # 1番雲が少ない画像をダウンロード
-for i in range(len(products)):
+for i in range(len(products_gdf_sorted)):
 
-  unclassified = products_gdf_sorted.iloc[i]["unclassifiedpercentage"]
+  metadata = products_gdf_sorted.iloc[i]
+  qi_info = fetch_s2_qi_info(uuid, metadata['title'])
 
-  metadata = api.get_product_odata(products_gdf_sorted.iloc[i]["uuid"])
-  print(metadata)
-  
-  #データがオンラインかつ、unclassifiedpercentage が1以上
-  if api.is_online(products_gdf_sorted.iloc[i]["uuid"]) and unclassified == 0:
+  #データがオンラインかつ、NODATA_PIXEL_PERCENTAGE が 0
+  if api.is_online(metadata["uuid"]) qi_info and qi_info['NODATA_PIXEL_PERCENTAGE'] == 0:
 
-    uuid = products_gdf_sorted.iloc[i]["uuid"]
-    product_title = products_gdf_sorted.iloc[i]["title"]
+    uuid = metadata["uuid"]
+    product_title = metadata["title"]
     break
-
+  
 api.download(uuid, checksum=True)
 
 # ダウンロードした ZIP ファイルを展開
