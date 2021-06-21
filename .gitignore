@@ -96,3 +96,5 @@ tiles1.vrt
 S2*
 
 *.geojson
+
+.netrc

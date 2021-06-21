@@ -1,23 +1,21 @@
 # Sentinel2 衛星画像タイル
 
-## 依存関係のインストール
 
-[`sentinelhub.py`](https://github.com/sentinel-hub/sentinelhub-py)、[`gdal`](https://gdal.org/) 、[`mb-util`](https://github.com/mapbox/mbutil) が必要です。
-以下の手順にそってインストールして下さい。
+## 環境構築
 
-### sentinelhub.py
+### 認証
 
-`pip` をお使いの場合は以下を実行して下さい。
+https://scihub.copernicus.eu/dhus/#/self-registration でユーザー登録をしてください。
 
-```
-$ pip install sentinelhub --upgrade
-```
+ユーザー登録時に入力したユーザーネームとパスワードを `.netrc.sample` の `<your username>` と `<your password>` と置き換えてください。
 
-`<your access key>` に AWSアクセスキーを、`<your secret access key>` にシークレットアクセスキーを設定して、以下を実行して下さい。
+以下のコマンドを実行してください。
 
 ```
-$ sentinelhub.config --aws_access_key_id <your access key> --aws_secret_access_key <your secret access key>
+mv .netrc.sample ~/.netrc
 ```
+
+### 依存関係のインストール
 
 ### gdal
 
@@ -34,16 +32,6 @@ $ brew install gdal
 ```
 $ easy_install mbutil
 ```
-
-## Sentinel2の画像をS3からダウンロード
-
-```
-$ sentinelhub.aws --tile 54SUE 2021-06-01
-```
-
-ダウンロード可能なタイルIDと期間を見つけるのには[EO Browser](https://apps.sentinel-hub.com/eo-browser/?zoom=8&lat=35.95578&lng=139.45496&themeId=DEFAULT-THEME) を使用。
-
-https://sentinelhub-py.readthedocs.io/en/latest/aws_cli.html#sentinel-2-tiles
 
 ## 複数の衛星画像をマージ
 
