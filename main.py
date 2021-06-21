@@ -2,6 +2,8 @@ import os
 from sentinelsat import SentinelAPI, read_geojson, geojson_to_wkt 
 import matplotlib.pyplot as plt
 from shapely.geometry import MultiPolygon, Polygon
+import rasterio as rio
+from rasterio.plot import show
 import re
 from xml.etree import ElementTree as ET
 
@@ -49,7 +51,6 @@ products = api.query(footprint_geojson,
                      date = ('20200608', '20210608'), #取得希望期間の入力
                      platformname = 'Sentinel-2',
                      processinglevel = 'Level-2A',
-                     limit = 2,
                      cloudcoverpercentage = (0,10)) #被雲率（0％〜100％）
 
 # 雲が少ない順にソート
@@ -86,10 +87,10 @@ def fetch_s2_qi_info(uuid, product_name):
 for i in range(len(products_gdf_sorted)):
 
   metadata = products_gdf_sorted.iloc[i]
-  qi_info = fetch_s2_qi_info(uuid, metadata['title'])
+  qi_info = fetch_s2_qi_info(metadata["uuid"], metadata['title'])
 
   #データがオンラインかつ、NODATA_PIXEL_PERCENTAGE が 0
-  if api.is_online(metadata["uuid"]) qi_info and qi_info['NODATA_PIXEL_PERCENTAGE'] == 0:
+  if api.is_online(metadata["uuid"]) and qi_info and qi_info['NODATA_PIXEL_PERCENTAGE'] == 0:
 
     uuid = metadata["uuid"]
     product_title = metadata["title"]
