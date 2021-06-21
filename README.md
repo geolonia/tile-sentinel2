@@ -17,20 +17,30 @@ mv .netrc.sample ~/.netrc
 
 ### 依存関係のインストール
 
-### gdal
+Python 
 
-Mac で `Homebrew` をお使いの場合は以下を実行して下さい。Windowsの場合は適宜調べて下さい。
+```
+$ pip install sentinelsat matplotlib shapely rasterio re xml
+
+```
+
+gdal
 
 ```
 $ brew install gdal
 ```
 
-### mb-util
-
-`easy_install` をお使いの場合は以下を実行して下さい。
-
+mb-util
 ```
 $ easy_install mbutil
+```
+
+## 開発手順
+
+## 衛星画像をダウンロード
+
+```
+$ python main.py
 ```
 
 ## 複数の衛星画像をマージ
