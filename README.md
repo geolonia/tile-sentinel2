@@ -24,13 +24,13 @@ $ pip install sentinelsat matplotlib shapely rasterio re xml
 
 ```
 
-gdal
+GDAL
 
 ```
 $ brew install gdal
 ```
 
-mb-util
+MBUtil
 ```
 $ easy_install mbutil
 ```
